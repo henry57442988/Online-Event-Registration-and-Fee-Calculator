@@ -1,9 +1,1 @@
-BIT_1234_ConferenceProject/
-│
-├── index.html
-├── register.html
-├── process.php
-├── css/
-│   └── style.css
-└── js/
-    └── script.js
+
