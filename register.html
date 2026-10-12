@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register – Student Technology Conference</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>Student Technology &amp; Innovation Conference</h1>
+            <p class="tagline">Registration Form</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="container">
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="register.html" class="active">Register</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Registration Form -->
+    <main class="container">
+        <section class="form-section">
+            <h2>Conference Registration</h2>
+            <p class="required-note">Fields marked with <span class="required">*</span> are required.</p>
+
+            <form id="registrationForm" action="process.php" method="POST" onsubmit="return validateForm(event)">
+
+                <!-- ===== Personal Information ===== -->
+                <fieldset>
+                    <legend>Personal Information</legend>
+
+                    <div class="form-group">
+                        <label for="fullName">Full Name <span class="required">*</span></label>
+                        <input type="text" id="fullName" name="fullName" placeholder="e.g. Mary Wanjiku" oninput="clearError('fullName')">
+                        <span class="error" id="error-fullName"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admissionNumber">Admission / Registration Number <span class="required">*</span></label>
+                        <input type="text" id="admissionNumber" name="admissionNumber" placeholder="e.g. BIT/1234/2026" oninput="clearError('admissionNumber')">
+                        <span class="error" id="error-admissionNumber"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">Email Address <span class="required">*</span></label>
+                        <input type="email" id="email" name="email" placeholder="e.g. mary@example.com" oninput="clearError('email')">
+                        <span class="error" id="error-email"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number (10 digits) <span class="required">*</span></label>
+                        <input type="tel" id="phone" name="phone" placeholder="e.g. 0712345678" maxlength="10" oninput="clearError('phone')">
+                        <span class="error" id="error-phone"></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="yearOfStudy">Year of Study <span class="required">*</span></label>
+                        <select id="yearOfStudy" name="yearOfStudy" onchange="clearError('yearOfStudy'); calculateFee()">
+                            <option value="">-- Select Year --</option>
+                            <option value="1">Year 1</option>
+                            <option value="2">Year 2</option>
+                            <option value="3">Year 3</option>
+                            <option value="4">Year 4 (Final Year)</option>
+                        </select>
+                        <span class="error" id="error-yearOfStudy"></span>
+                    </div>
+                </fieldset>
+
+                <!-- ===== Participation Details ===== -->
+                <fieldset>
+                    <legend>Participation Details</legend>
+
+                    <div class="form-group">
+                        <label for="category">Participation Category <span class="required">*</span></label>
+                        <select id="category" name="category" onchange="handleCategoryChange(); calculateFee()">
+                            <option value="">-- Select Category --</option>
+                            <option value="conference_only">Conference Only</option>
+                            <option value="workshop_participant">Workshop Participant</option>
+                            <option value="presenter">Presenter</option>
+                        </select>
+                        <span class="error" id="error-category"></span>
+                    </div>
+
+                    <!-- Dynamic message for selected package -->
+                    <div id="packageMessage" class="package-message"></div>
+
+                    <div class="form-group">
+                        <label for="days">Number of Conference Days (1–3) <span class="required">*</span></label>
+                        <input type="number" id="days" name="days" min="1" max="3" value="1" oninput="calculateFee(); clearError('days')">
+                        <span class="error" id="error-days"></span>
+                    </div>
+
+                    <!-- Workshop options (hidden by default) -->
+                    <div class="form-group" id="workshopGroup" style="display:none;">
+                        <label for="workshop">Workshop Selection</label>
+                        <select id="workshop" name="workshop" onchange="calculateFee()">
+                            <option value="none">-- No Workshop --</option>
+                            <option value="web_development">Web Development</option>
+                            <option value="mobile_apps">Mobile App Development</option>
+                            <option value="data_science">Data Science &amp; AI</option>
+                            <option value="cybersecurity">Cybersecurity</option>
+                        </select>
+                    </div>
+
+                    <!-- Meal option -->
+                    <div class="form-group">
+                        <label for="meal">Meal Option</label>
+                        <select id="meal" name="meal" onchange="calculateFee()">
+                            <option value="no">No Catering</option>
+                            <option value="yes">Catering (Lunch)</option>
+                        </select>
+                    </div>
+                </fieldset>
+
+                <!-- ===== Fee Display ===== -->
+                <fieldset class="fee-section">
+                    <legend>Fee Summary</legend>
+                    <div id="feeBreakdown">
+                        <p>Registration Fee: <span id="regFee">KSh 1,000</span></p>
+                        <p>Attendance Fee: <span id="attendanceFee">KSh 0</span></p>
+                        <p>Workshop Fee: <span id="workshopFee">KSh 0</span></p>
+                        <p>Meal Fee: <span id="mealFee">KSh 0</span></p>
+                        <p id="discountLine" style="display:none;">Final-Year Discount (5%): <span id="discountAmount">- KSh 0</span></p>
+                        <hr>
+                        <p class="total">TOTAL AMOUNT PAYABLE: <span id="totalFee">KSh 1,000</span></p>
+                    </div>
+                </fieldset>
+
+                <!-- Submit -->
+                <div class="form-group submit-group">
+                    <button type="submit" class="btn-submit">Submit Registration</button>
+                    <button type="reset" class="btn-reset" onclick="resetForm()">Reset</button>
+                </div>
+
+            </form>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 Student Technology and Innovation Conference. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
